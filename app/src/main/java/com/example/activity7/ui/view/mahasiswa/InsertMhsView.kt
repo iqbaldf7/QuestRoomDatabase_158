@@ -1,4 +1,4 @@
-package com.example.week9.ui.view.mahasiswa
+package com.example.activity7.ui.view.mahasiswa
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
