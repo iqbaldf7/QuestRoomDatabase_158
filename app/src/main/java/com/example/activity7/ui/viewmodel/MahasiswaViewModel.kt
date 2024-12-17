@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class MahasiswaViewModel(private val repositoryMhs: RepositoryMhs) : ViewModel(){
 
+
     var uiState by mutableStateOf(MhsUIState())
 
     fun updateState(mahasiswaEvent: MahasiswaEvent){
