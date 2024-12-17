@@ -60,10 +60,11 @@ class MahasiswaViewModel(private val repositoryMhs: RepositoryMhs) : ViewModel()
         }
     }
 
-    //Reset pesan snackbar setelah ditampilkan
+
     fun resetSnackBarMessage(){
         uiState = uiState.copy(snackBarMessage = null)
     }
+
 }
 
 data class MhsUIState(
@@ -86,7 +87,7 @@ data class FormErrorState(
     }
 }
 
-//data class Variabel yang menyimpan data input form
+
 data class MahasiswaEvent(
     val nim : String = "",
     val nama : String = "",
@@ -96,7 +97,7 @@ data class MahasiswaEvent(
     val angkatan : String = ""
 )
 
-// Menyimpan input form ke dalam entity
+
 fun MahasiswaEvent.toMahasiswaEntity(): Mahasiswa = Mahasiswa(
     nim = nim,
     nama = nama,
