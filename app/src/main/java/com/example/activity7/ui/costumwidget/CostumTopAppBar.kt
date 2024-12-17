@@ -15,10 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TopAppBar(
+fun customTopAppBar(
     onBack: () -> Unit,
     showBackButton: Boolean = true,
     judul: String,
+    modifier: Modifier
 ) {
     Box(
         modifier = Modifier
