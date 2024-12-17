@@ -1,4 +1,3 @@
-package com.example.week9.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activity7.Repository.RepositoryMhs
