@@ -1,27 +1,26 @@
 package com.example.activity7.ui.viewmodel
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.activity7.Repository.LocalRepositoryMhs
 import com.example.activity7.Repository.RepositoryMhs
 import com.example.activity7.data.entity.Mahasiswa
 import kotlinx.coroutines.launch
 
-
 class MahasiswaViewModel(private val repositoryMhs: RepositoryMhs) : ViewModel(){
-
 
     var uiState by mutableStateOf(MhsUIState())
 
+    // Memperbarui state berdasarkan input pengguna
     fun updateState(mahasiswaEvent: MahasiswaEvent){
         uiState = uiState.copy(
-            mahasiswaEvent = mahasiswaEvent
+            mahasiswaEvent = mahasiswaEvent,
         )
     }
 
-    private fun validateFields(): Boolean {
+    // Validasi data input pengguna
+    private fun validatefields(): Boolean {
         val event = uiState.mahasiswaEvent
         val errorState = FormErrorState(
             nim = if (event.nim.isNotEmpty()) null else "NIM tidak boleh kosong",
@@ -32,78 +31,77 @@ class MahasiswaViewModel(private val repositoryMhs: RepositoryMhs) : ViewModel()
             angkatan = if (event.angkatan.isNotEmpty()) null else "Angkatan tidak boleh kosong",
         )
 
-        uiState = uiState.copy(
-            isEntryValid = errorState
-        )
-        return errorState.invalid()
+        uiState = uiState.copy(isEntryValid = errorState)
+        return errorState.isValid()
     }
 
     fun saveData() {
         val currentEvent = uiState.mahasiswaEvent
-        if (validateFields()) {
+        if (validatefields()) {
             viewModelScope.launch {
-                try{
+                try {
                     repositoryMhs.insertMhs(currentEvent.toMahasiswaEntity())
                     uiState = uiState.copy(
-                        snackbarMessage = "Data berhasil disimpan",
-                        mahasiswaEvent = MahasiswaEvent(),
-                        isEntryValid = FormErrorState()
+                        snackBarMessage = "Data Berhasil Disimpan",
+                        mahasiswaEvent = MahasiswaEvent(), // Reset Input Form
+                        isEntryValid = FormErrorState() // Reset Error state
                     )
-                }catch (e: Exception){
+                }
+                catch (e: Exception){
                     uiState = uiState.copy(
-                        snackbarMessage = "Data gagal disimpan"
+                        snackBarMessage = "Data Gagal Disimpan"
                     )
                 }
             }
-        }else {
+        } else {
             uiState = uiState.copy(
-                snackbarMessage = "Input tidak valid. Periksa data anda"
+                snackBarMessage = "Input tidak Valid. Periksa kembali data anda"
             )
         }
     }
 
-    fun resetSnackbarMessage() {
-        uiState = uiState.copy(
-            snackbarMessage = null
-        )
+    //Reset pesan snackbar setelah ditampilkan
+    fun resetSnackBarMessage(){
+        uiState = uiState.copy(snackBarMessage = null)
     }
 }
 
 data class MhsUIState(
     val mahasiswaEvent: MahasiswaEvent = MahasiswaEvent(),
     val isEntryValid: FormErrorState = FormErrorState(),
-    val snackbarMessage: String? = null
+    val snackBarMessage : String? = null
 )
 
 data class FormErrorState(
-    val nim: String? = null,
-    val nama: String? = null,
+    val nim : String? = null,
+    val nama : String? = null,
     val jenisKelamin: String? = null,
     val alamat: String? = null,
     val kelas: String? = null,
-    val angkatan: String? = null,
+    val angkatan: String? = null
 ){
-    fun invalid(): Boolean{
+    fun isValid(): Boolean{
         return nim == null && nama == null && jenisKelamin == null &&
                 alamat == null && kelas == null && angkatan == null
     }
 }
 
+//data class Variabel yang menyimpan data input form
 data class MahasiswaEvent(
-    val nim: String = "",
-    val nama: String = "",
-    val jenisKelamin: String = "",
-    val alamat: String = "",
-    val kelas: String = "",
-    val angkatan: String = "",
+    val nim : String = "",
+    val nama : String = "",
+    val jenisKelamin : String = "",
+    val alamat : String = "",
+    val kelas : String = "",
+    val angkatan : String = ""
 )
 
-
+// Menyimpan input form ke dalam entity
 fun MahasiswaEvent.toMahasiswaEntity(): Mahasiswa = Mahasiswa(
     nim = nim,
     nama = nama,
     jenisKelamin = jenisKelamin,
     alamat = alamat,
     kelas = kelas,
-    angkatan = angkatan
+    angkatan = angkatan,
 )
