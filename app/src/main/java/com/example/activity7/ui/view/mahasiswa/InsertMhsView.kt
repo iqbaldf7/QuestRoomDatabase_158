@@ -1,4 +1,3 @@
-package com.example.week9.ui.view.mahasiswa
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,20 +15,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.activity7.ui.costumwidget.TopAppBar
-import com.example.activity7.ui.navigation.AlamatNavigasi
+import com.example.activity7.ui.Navigation.AlamatNavigasi
+import com.example.activity7.ui.costumwidget.customTopAppBar
 import com.example.activity7.ui.viewmodel.FormErrorState
 import com.example.activity7.ui.viewmodel.MahasiswaEvent
 import com.example.activity7.ui.viewmodel.MahasiswaViewModel
@@ -37,61 +34,60 @@ import com.example.activity7.ui.viewmodel.MhsUIState
 import com.example.activity7.ui.viewmodel.PenyediaViewModel
 import kotlinx.coroutines.launch
 
-object DestinationInsert : AlamatNavigasi {
-    override val route: String = "insert_mhs"
+object DestinasiInsert : AlamatNavigasi {
+    override val route: String = "inset_mhs"
 }
-
 
 
 @Composable
 fun InsertMhsView(
     onBack: () -> Unit,
     onNavigate: () -> Unit,
-    modifier : Modifier = Modifier,
-    viewModel: MahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory)
-){
-    val uiState = viewModel.uiState //ambil uistate dari viewmodel
-    val snackbarHostState = remember { SnackbarHostState() } //snackbar state
+    modifier: Modifier = Modifier,
+    viewModel: MahasiswaViewModel = viewModel (factory = PenyediaViewModel.Factory) //Inisialisasi View Model
+) {
+    val uiState = viewModel.uiState // Ambil UI State dari ViewModel
+    val snackbarHostState = remember { SnackbarHostState() } // Snackbar State
     val coroutineScope = rememberCoroutineScope()
 
-    ///observasi perubahan snackbarMessage
-    LaunchedEffect(uiState.snackbarMessage)  {
-        uiState.snackbarMessage?.let { message ->
-            coroutineScope.launch {
-                snackbarHostState.showSnackbar(message) //tampilkan snackbar
-                viewModel.resetSnackbarMessage()
+    // Observasi perubahan snackbarMessage
+    LaunchedEffect(uiState.snackBarMessage) {
+        uiState.snackBarMessage?.let { message ->
+            coroutineScope.launch{
+                snackbarHostState.showSnackbar(message) // Tampilkan Snackbar
+                viewModel.resetSnackBarMessage()
             }
         }
     }
 
-
-
-
-    Scaffold(
+    Scaffold (
         modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ){padding ->
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) } // Tempatkan Snackbar di Scaffold
+    ){
+            padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
-        ){
+        ) {
 
-            CustomToppAppBar(
+            customTopAppBar(
                 onBack = onBack,
                 showBackButton = true,
-                judul = "Tambah Mahasiswa"
+                judul = "Tambah Mahasiswa",
+                modifier = modifier
             )
 
+            //Isi Body
             InsertBodyMhs(
                 uiState = uiState,
                 onValueChange = { updatedEvent ->
-                    viewModel.updateState(updatedEvent) //update state diviewmodel
+                    viewModel.updateState(updatedEvent) // Update state di viewmodel
                 },
                 onClick = {
-                    coroutineScope.launch {
-                        viewModel.saveData() //save data ke database
+                    coroutineScope.launch{
+                        viewModel.saveData() //Simpan Data
                     }
                     onNavigate()
                 }
@@ -101,22 +97,17 @@ fun InsertMhsView(
 }
 
 @Composable
-fun CustomToppAppBar(onBack: () -> Unit, showBackButton: Boolean, judul: String) {
-}
-
-@Composable
-fun InsertBodyMhs(
+fun InsertBodyMhs (
     modifier: Modifier = Modifier,
     onValueChange: (MahasiswaEvent) -> Unit,
     uiState: MhsUIState,
     onClick: () -> Unit
-
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
+    Column (
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement =  Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         FormMahasiswa(
             mahasiswaEvent = uiState.mahasiswaEvent,
             onValueChange = onValueChange,
@@ -125,10 +116,9 @@ fun InsertBodyMhs(
         )
         Button(
             onClick = onClick,
-            modifier = Modifier.fillMaxWidth()
-
-        ){
-            Text(text = "Simpan")
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Simpan")
         }
     }
 }
@@ -140,62 +130,55 @@ fun FormMahasiswa(
     errorState: FormErrorState = FormErrorState(),
     modifier: Modifier = Modifier
 ){
-
-    val jenisKelamin = listOf("Laki-laki", "Perempuan")
+    val jenisKelamin = listOf("Laki-Laki", "Perempuan")
     val kelas = listOf("A", "B", "C", "D", "E")
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
+    Column (
+        modifier = modifier.fillMaxWidth()
     ){
-
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = mahasiswaEvent.nama,
             onValueChange = {
                 onValueChange(mahasiswaEvent.copy(nama = it))
             },
-            label = {Text(text = "Nama")},
+            label = { Text("Nama") },
             isError = errorState.nama != null,
-            placeholder = {Text(text = "Masukkan nama")},
+            placeholder = {Text("Masukkan Nama")},
         )
         Text(
-            text = errorState.nama ?: "",
+            text = errorState.nama?: "",
             color = Color.Red
         )
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = mahasiswaEvent.nim,
-            onValueChange = {
+            value = mahasiswaEvent.nim, onValueChange = {
                 onValueChange(mahasiswaEvent.copy(nim = it))
-            },
-            label = {Text(text = "NIM")},
+            } ,
+            label = { Text("NIM") },
             isError = errorState.nim != null,
-            placeholder = {Text(text = "Masukkan NIM")},
+            placeholder = {Text("Masukkan NIM")},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        Text(
-            text = errorState.nim ?: "",
-            color = Color.Red
-        )
+        Text(text = errorState.nim ?: "", color = Color.Red)
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Jenis Kelamin")
-        Row(
+        Row (
             modifier = Modifier.fillMaxWidth()
         ){
-            jenisKelamin.forEach { jk ->
-                Row(
+            jenisKelamin.forEach{jk ->
+                Row (
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     RadioButton(
-                        selected = mahasiswaEvent.jenisKelamin == jk,
+                        selected = mahasiswaEvent.jenisKelamin ==jk,
                         onClick = {
                             onValueChange(mahasiswaEvent.copy(jenisKelamin = jk))
                         },
-
-                        )
+                    )
                     Text(
                         text = jk,
                     )
@@ -209,25 +192,22 @@ fun FormMahasiswa(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = mahasiswaEvent.alamat,
-            onValueChange = {
+            value = mahasiswaEvent.alamat, onValueChange = {
                 onValueChange(mahasiswaEvent.copy(alamat = it))
-            },
-            label = {Text(text = "Alamat")},
+            } ,
+            label = { Text("Alamat") },
             isError = errorState.alamat != null,
-            placeholder = {Text(text = "Masukkan Alamat")},
+            placeholder = {Text("Masukkan Alamat")},
         )
-        Text(
-            text = errorState.alamat ?: "",
-            color = Color.Red
-        )
+        Text(text = errorState.alamat ?: "", color = Color.Red)
+
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Kelas")
-        Row(
+        Row (
             modifier = Modifier.fillMaxWidth()
         ){
-            kelas.forEach { kelas ->
-                Row(
+            kelas.forEach{kelas ->
+                Row (
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
@@ -236,8 +216,7 @@ fun FormMahasiswa(
                         onClick = {
                             onValueChange(mahasiswaEvent.copy(kelas = kelas))
                         },
-
-                        )
+                    )
                     Text(
                         text = kelas,
                     )
@@ -251,17 +230,14 @@ fun FormMahasiswa(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = mahasiswaEvent.angkatan,
-            onValueChange = {
+            value = mahasiswaEvent.angkatan, onValueChange = {
                 onValueChange(mahasiswaEvent.copy(angkatan = it))
-            },
-            label = {Text(text = "Angkatan")},
+            } ,
+            label = { Text("Angkatan") },
             isError = errorState.angkatan != null,
-            placeholder = {Text(text = "Masukkan Angkatan")},
+            placeholder = {Text("Masukkan Angkatan")},
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        Text(
-            text = errorState.angkatan ?: "",
-            color = Color.Red
-        )
+        Text(text = errorState.angkatan ?: "", color = Color.Red)
     }
 }
