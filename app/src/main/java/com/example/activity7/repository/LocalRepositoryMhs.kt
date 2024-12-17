@@ -1,19 +1,14 @@
-package com.example.activity7.Repository
-
+package com.example.activity7.repository
 import com.example.activity7.data.dao.MahasiswaDao
 import com.example.activity7.data.entity.Mahasiswa
 import kotlinx.coroutines.flow.Flow
 
-
 class LocalRepositoryMhs(
     private val mahasiswaDao: MahasiswaDao
-) : RepositoryMhs {
-
-
-    override suspend fun insertMhs(mahasiswa: Mahasiswa) {
-        mahasiswaDao.insertMahasiswa(mahasiswa)
+): RepositoryMhs {
+    override suspend fun insertMhs(mahassiswa: Mahasiswa) {
+        mahasiswaDao.insertMahasiswa(mahassiswa)
     }
-
 
     override fun getAllMhs(): Flow<List<Mahasiswa>> {
         return mahasiswaDao.getAllMahasiswa()
@@ -24,12 +19,11 @@ class LocalRepositoryMhs(
     }
 
     override suspend fun deleteMhs(mahasiswa: Mahasiswa) {
-        mahasiswaDao.deletedMahasiswa(mahasiswa)
+        mahasiswaDao.deleteMahasiswa(mahasiswa)
     }
 
     override suspend fun updateMhs(mahasiswa: Mahasiswa) {
         mahasiswaDao.updateMahasiswa(mahasiswa)
     }
+
 }
-
-
