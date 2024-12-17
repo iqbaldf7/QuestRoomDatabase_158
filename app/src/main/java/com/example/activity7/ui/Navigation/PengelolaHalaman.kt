@@ -59,6 +59,7 @@ fun PengelolaHalaman(
                     type = NavType.StringType
                 }
             )
+
         ) { backStackEntry ->
             val nim = backStackEntry.arguments?.getString(DestinasiDetail.NIM)
             nim?.let {
